@@ -1,0 +1,46 @@
+#!/usr/bin/env python
+import sys
+
+import rospy
+
+import std_msgs.msg
+import geometry_msgs.msg
+
+import std_srvs.srv
+
+import ardrone
+
+rospy.init_node('ardrone')
+
+try:
+    drone = ardrone.ARDrone(rospy.get_param('~host'))
+except KeyError:
+    drone = ardrone.ARDrone()
+
+def send_command(twist):
+    drone.move(-twist.linear.y, -twist.linear.x, twist.linear.z, -twist.angular.z)
+rospy.Subscriber('cmd_vel', geometry_msgs.msg.Twist, send_command)
+
+def send_reset(req):
+    drone.reset()
+    return []
+rospy.Service('ardrone/reset', std_srvs.srv.Empty, send_reset)
+
+def send_land(req):
+    drone.land()
+    return []
+rospy.Service('ardrone/land', std_srvs.srv.Empty, send_land)
+
+def send_takeoff(req):
+    drone.takeoff()
+    return []
+rospy.Service('ardrone/takeoff', std_srvs.srv.Empty, send_takeoff)
+
+def send_trim(req):
+    drone.trim()
+    return []
+rospy.Service('ardrone/trim', std_srvs.srv.Empty, send_trim)
+
+rospy.spin()
+
+drone.halt()
