@@ -5,8 +5,11 @@ import rospy
 
 import std_msgs.msg
 import geometry_msgs.msg
-
+import sensor_msgs.msg
 import std_srvs.srv
+
+import ardrone.msg
+import ardrone.srv
 
 import ardrone
 
@@ -17,9 +20,25 @@ try:
 except KeyError:
     drone = ardrone.ARDrone()
 
+try:
+    freq = ardrone.ARDrone(rospy.get_param('~freq'))
+except KeyError:
+    freq = 20 # Hz
+
+navdata = rospy.Publisher('ardrone/navdata', ardrone.msg.Navdata, queue_size=10)
+image = rospy.Publisher('ardrone/image', sensor_msgs.msg.Image, queue_size=10)
+
+def update_navdata(event):
+    navdata.publish(ardrone.msg.Navdata(**drone.navdata['demo']))
+rospy.Timer(rospy.Duration(1.0/freq, update_navdata))
+
+def update_image(event):
+    image.publish(sensor_msgs.msg.Image(height=drone.image.height, width=drone.image.width, encoding="rgb8", step=drone.image.width*3, data=drone.image.getdata()))
+rospy.Timer(rospy.Duration(1.0/freq, update_image))
+
 def send_command(twist):
     drone.move(-twist.linear.y, -twist.linear.x, twist.linear.z, -twist.angular.z)
-rospy.Subscriber('cmd_vel', geometry_msgs.msg.Twist, send_command)
+rospy.Subscriber('ardrone/cmd_vel', geometry_msgs.msg.Twist, send_command)
 
 def send_reset(req):
     drone.reset()
@@ -40,6 +59,11 @@ def send_trim(req):
     drone.trim()
     return []
 rospy.Service('ardrone/trim', std_srvs.srv.Empty, send_trim)
+
+def set_cam(req):
+    drone.set_cam(req.cam)
+    return []
+rospy.Service('ardrone/setcam', ardrone.srv.SetCam, set_cam)
 
 rospy.spin()
 

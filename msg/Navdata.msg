@@ -1,0 +1,10 @@
+int32 ctrl_state
+int32 battery
+float theta
+float phi
+float psi
+int32 altitude
+float vx
+float vy
+float vz
+int32 num_frames
