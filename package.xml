@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>ardrone</name>
+  <name>ardrone_driver</name>
   <version>0.0.1</version>
   <description>ROS driver for the Parrot AR.Drone 2.0 quadrotor</description>
 

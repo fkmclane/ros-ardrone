@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(ardrone)
+project(ardrone_driver)
 
 find_package(catkin REQUIRED COMPONENTS rospy message_generation std_msgs std_srvs geometry_msgs sensor_msgs)
 
