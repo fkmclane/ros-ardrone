@@ -1,10 +1,10 @@
 int32 ctrl_state
 int32 battery
-float theta
-float phi
-float psi
+float32 theta
+float32 phi
+float32 psi
 int32 altitude
-float vx
-float vy
-float vz
+float32 vx
+float32 vy
+float32 vz
 int32 num_frames
