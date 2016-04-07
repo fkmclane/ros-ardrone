@@ -29,11 +29,12 @@ navdata = rospy.Publisher('ardrone/navdata', ardrone.msg.Navdata, queue_size=10)
 image = rospy.Publisher('ardrone/image', sensor_msgs.msg.Image, queue_size=10)
 
 def update_navdata(event):
-    navdata.publish(ardrone.msg.Navdata(**drone.navdata['demo']))
+    if 'demo' in drone.navdata:
+        navdata.publish(ardrone.msg.Navdata(**drone.navdata['demo']))
 rospy.Timer(rospy.Duration(1.0/freq, update_navdata))
 
 def update_image(event):
-    image.publish(sensor_msgs.msg.Image(height=drone.image.height, width=drone.image.width, encoding="rgb8", step=drone.image.width*3, data=drone.image.getdata()))
+    image.publish(sensor_msgs.msg.Image(height=drone.image.height, width=drone.image.width, encoding="rgb8", step=drone.image.width*3, data=drone.image.tobytes()))
 rospy.Timer(rospy.Duration(1.0/freq, update_image))
 
 def send_command(twist):
