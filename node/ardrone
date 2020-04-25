@@ -21,7 +21,7 @@ except KeyError:
     drone = ardrone.ARDrone()
 
 try:
-    freq = ardrone.ARDrone(rospy.get_param('~freq'))
+    freq = rospy.get_param('~freq')
 except KeyError:
     freq = 20 # Hz
 
